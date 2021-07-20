@@ -1,13 +1,6 @@
 (ns foreclojure.core
   (require [clojure.string]))
 
-; https://www.4clojure.com/problem/157
-(defn index-seq
-  "Transform a sequence into a sequence of pairs containing the original
-  elements along with their index."
-  [xs]
-  (into [] (zipmap xs (range (count xs)))))
-
 (defn product-digits
   "Write a function which multiplies two numbers and
   returns the result as a sequence of its digits."
@@ -157,7 +150,7 @@
           (nil? left))
         (if (coll? right)
           (binary-tree? right)
-          (nil? right)))))))
+          (nil? right))))))
 
 ; This solution is cleaner because we consider nil to be a valid binary tree,
 ; eliminating a lot of the checks along the way in the above soln.
@@ -383,6 +376,13 @@
 
 ; Better? shorter solution; requires clojure.set which 4clojure disallows. (I think).
 ; #(= (->> (map count %) (reduce +)) (count (apply clojure.set/union %)))
+
+; https://www.4clojure.com/problem/157
+(defn index-seq
+  "Transform a sequence into a sequence of pairs containing the original
+  elements along with their index."
+  [xs]
+  (into [] (zipmap xs (range (count xs)))))
 
 ; https://www.4clojure.com/problem/171
 (defn intervals
