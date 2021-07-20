@@ -1,6 +1,8 @@
 (ns foreclojure.core
   (require [clojure.string]))
 
+; These are my solutions to Foreclojure problems.
+
 (defn product-digits
   "Write a function which multiplies two numbers and
   returns the result as a sequence of its digits."
