@@ -40,6 +40,17 @@
       (= (conj sample 1 2) [1 2]) :vector
       :else :list)))
 
+; https://www.4clojure.com/problem/66
+(defn greatest-common-divisor
+  "Given two integers, write a function which returns the greatest common divisor."
+  [a b]
+  (cond
+    (= a 0) b
+    (= b 0) a
+    (= a b) a
+    (> a b) (greatest-common-divisor (- a b) b)
+    :else (greatest-common-divisor a (- b a))))
+
 ; https://www.4clojure.com/problem/70
 (defn word-sort
   "Write a function that splits a sentence up into a sorted list of words.
@@ -179,6 +190,31 @@
                    (mirror? (nth t1 2) (nth t2 1)))))]
     (mirror? (nth t 1) (nth t 2))))
 
+; https://www.4clojure.com/problem/97
+(defn pascal-triangle
+  "Pascal's triangle is a triangle of numbers computed using the following rules:
+  - The first row is 1.
+  - Each successive row is computed by adding together adjacent numbers in the row above,
+    and adding a 1 to the beginning and end of the row.
+  Write a function which returns the nth row of Pascal's Triangle."
+  [n]
+  (loop [row [1]
+         idx 1]
+    (if (= idx n)
+      row
+      (recur
+        (vec
+          (concat
+            [1]
+            (->> (partition 2 1 row)
+                 (mapv #(apply + %)))
+            [1]))
+        (inc idx)))))
+
+; https://www.4clojure.com/problem/100
+(defn least-common-multiple [ & xs]
+  )
+
 ; https://www.4clojure.com/problem/102
 (defn into-camel-case
   "When working with java, you often need to create an object with
@@ -281,6 +317,16 @@
   "Choose an x that satisfies the following."
   (let [x java.lang.Class]
     (and (= (class x) x) x)))
+
+; https://www.4clojure.com/problem/128
+(defn recognize-playing-cards [[suit rank]]
+  (let [suits {\S :spade
+               \H :heart
+               \D :diamond
+               \C :club}
+        ranks {\2 0 \3 1 \4 2 \5 3 \6 4 \7 5 \8 6 \9 7 \T 8 \J 9 \Q 10 \K 11 \A 12}]
+    {:suit (suits suit)
+     :rank (ranks rank)}))
 
 ; https://www.4clojure.com/problem/132
 ; This solution works, but ended up being a little clunky.
