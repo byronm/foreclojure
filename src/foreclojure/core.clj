@@ -29,9 +29,10 @@
 
 ; https://www.4clojure.com/problem/65
 (defn black-box-testing
-  "Write a function which takes a collection and returns one of :map, :set, :list, or :vector
-  - describing the type of collection it was given. You won't be allowed to inspect their class
-  or use the built-in predicates like list? - the point is to poke at them and understand their behavior."
+  "Write a function which takes a collection and returns one of :map, :set,
+  :list, or :vector - describing the type of collection it was given. You
+  won't be allowed to inspect their class or use the built-in predicates like
+  list? - the point is to poke at them and understand their behavior."
   [coll]
   (let [sample (empty coll)]
     (cond
@@ -42,7 +43,8 @@
 
 ; https://www.4clojure.com/problem/66
 (defn greatest-common-divisor
-  "Given two integers, write a function which returns the greatest common divisor."
+  "Given two integers, write a function which returns the greatest common
+  divisor."
   [a b]
   (cond
     (= a 0) b
@@ -54,7 +56,8 @@
 ; https://www.4clojure.com/problem/70
 (defn word-sort
   "Write a function that splits a sentence up into a sorted list of words.
-  Capitalization should not affect sort order and punctuation should be ignored."
+  Capitalization should not affect sort order and punctuation should be
+  ignored."
   [s]
   (sort-by clojure.string/lower-case (re-seq #"\w+" s)))
 
@@ -76,8 +79,8 @@
       ))
 
 (defn tic-tac-toe
-  "Write a function which analyzes a tic-tac-toe board and returns :x if X has won,
-  :o if O has won, and nil if neither player has won."
+  "Write a function which analyzes a tic-tac-toe board and returns :x if X has
+  won, :o if O has won, and nil if neither player has won."
   [board]
   (let [rows board
         cols (apply map list board)
@@ -89,7 +92,8 @@
 ; https://www.4clojure.com/problem/74
 (defn filter-perfect-squares
   "Given a string of comma separated integers, write a function which returns
-  a new comma separated string that only contains the numbers which are perfect squares."
+  a new comma separated string that only contains the numbers which are perfect
+  squares."
   [s]
   ; split the string
   ; filter across it with a square pred
@@ -105,7 +109,8 @@
 (defn trampo
   "Implement your own trampoline function."
   [f & args]
-  ; TODO: Does this get tail-call optimized, or should I use loop/recur instead of the recursive call?
+  ; TODO: Does this get tail-call optimized, or should I use loop/recur instead
+  ; of the recursive call?
   (let [ret (apply f args)]
     (if (fn? ret)
       (trampo ret)
@@ -192,10 +197,11 @@
 
 ; https://www.4clojure.com/problem/97
 (defn pascal-triangle
-  "Pascal's triangle is a triangle of numbers computed using the following rules:
+  "Pascal's triangle is a triangle of numbers computed using the following
+  rules:
   - The first row is 1.
-  - Each successive row is computed by adding together adjacent numbers in the row above,
-    and adding a 1 to the beginning and end of the row.
+  - Each successive row is computed by adding together adjacent numbers in
+    the  row above, and adding a 1 to the beginning and end of the row.
   Write a function which returns the nth row of Pascal's Triangle."
   [n]
   (loop [row [1]
@@ -210,6 +216,17 @@
                  (mapv #(apply + %)))
             [1]))
         (inc idx)))))
+
+; https://www.4clojure.com/problem/98
+(defn equiv-classes
+  "a is equivalent to b with respect to f if and only if (f a) is equal to
+  (f b). Write a function with arguments f and D that computes the
+  equivalence classes of D with respect to f"
+  [f d]
+  (->> (group-by f d)
+       vals
+       (map set)
+       set))
 
 ; https://www.4clojure.com/problem/100
 (defn least-common-multiple [ & xs]
@@ -227,6 +244,23 @@
         tokens (apply vector x capitalized-xs)]
     (clojure.string/join tokens)))
 
+; https://www.4clojure.com/problem/103
+(defn k-combinations
+  "Given a sequence S consisting of n elements generate all k-combinations of S,
+  i. e. generate all possible sets consisting of k distinct elements taken
+  from S."
+  [k xs]
+  (letfn [(k-comb-rec [combos combo xs]
+            (if (= (count combo) k)
+              #{combo}
+              (when (not-empty xs)
+                (set
+                  (concat
+                    combos
+                    (k-comb-rec combos (conj combo (first xs)) (rest xs))
+                    (k-comb-rec combos combo (rest xs)))))))]
+    (k-comb-rec #{} #{} xs)))
+
 ; https://www.4clojure.com/problem/105
 (defn identify-k-v [s]
   ; oops; this implementation fails because it overlooked an edge-case
@@ -240,8 +274,8 @@
 ; https://www.4clojure.com/problem/114
 (defn global-take-while
   "Write a function which accepts an integer n, a predicate p, and a sequence.
-  It should return a lazy sequence of items in the list up to, but not including,
-  the nth item that satisfies the predicate."
+  It should return a lazy sequence of items in the list up to, but not
+  including, the nth item that satisfies the predicate."
   [n p? xs]
   (if (p? (first xs))
     (let [n (dec n)]
@@ -265,7 +299,8 @@
 ; https://www.4clojure.com/problem/118
 (defn m
   "Map is one of the core elements of a functional programming language.
-  Given a function f and an input sequence s, return a lazy sequence of (f x) for each element x in s."
+  Given a function f and an input sequence s, return a lazy sequence of (f x)
+  for each element x in s."
   [f [h & t :as xs]]
   (if (empty? xs)
     '()
@@ -274,7 +309,8 @@
 ; https://www.4clojure.com/problem/120
 (defn sum-square-digits
   "Write a function which takes a collection of integers as an argument.
-  Return the count of how many elements are smaller than the sum of their squared component digits."
+  Return the count of how many elements are smaller than the sum of their
+  squared component digits."
   [coll]
   (count
     (filter
@@ -286,8 +322,9 @@
 
 ; https://www.4clojure.com/problem/121
 (defn universal-computation-engine
-  "Given a formula in prefix notation, return a function that accepts a mapping of variables to values and computes the result.
-  Formulas may contain +,-,*,/,constants, and variables."
+  "Given a formula in prefix notation, return a function that accepts a
+  mapping of variables to values and computes the result. Formulas may
+  contain +,-,*,/,constants, and variables."
   [formula]
   (fn [symbol-table]
     (let [ops {'+ +, '- -, '* *, '/ / }
@@ -522,23 +559,6 @@
                        (gen-parens-rec (str paren-str ")") num-to-open (dec num-unclosed))
                        #{})))))]
     (gen-parens-rec "" n 0)))
-
-
-(defn gen-parens-B
-  "Generate all possible combinations of well-formed parentheses of length 2n
-  (n pairs of parentheses). Return as a set of strings, e.g. ,#{'()()', '(())'}."
-  [n]
-  (letfn [(gen-parens-rec [paren-str num-to-open num-to-close num-unclosed]
-            (if (every? zero? [num-to-open num-to-close])
-              #{paren-str}
-              (set (concat
-                     (if (pos? num-to-open)
-                       (gen-parens-rec (str paren-str "(") (dec num-to-open) num-to-close (inc num-unclosed))
-                       #{})
-                     (if (and (pos? num-unclosed) (pos? num-to-close))
-                       (gen-parens-rec (str paren-str ")") num-to-open (dec num-to-close) (dec num-unclosed))
-                       #{})))))]
-    (gen-parens-rec "" n n 0)))
 
 (defn identify-k-v [s]
   (loop [m {}
