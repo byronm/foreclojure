@@ -1,13 +1,6 @@
 (ns foreclojure.core
   (require [clojure.string]))
 
-; https://www.4clojure.com/problem/157
-(defn index-seq
-  "Transform a sequence into a sequence of pairs containing the original
-  elements along with their index."
-  [xs]
-  (into [] (zipmap xs (range (count xs)))))
-
 (defn product-digits
   "Write a function which multiplies two numbers and
   returns the result as a sequence of its digits."
@@ -105,6 +98,20 @@
          (filter perfect-square?)
          (clojure.string/join ","))))
 
+; https://4clojure.oxal.org/#/problem/77
+(defn anagram-finder
+  "Write a function which finds all the anagrams in a vector of words.
+   Your function should return a set of sets.
+   Words without any anagrams should be excluded from the result."
+  [xs]
+  (->> xs
+       (group-by sort)
+       vals
+       (filter #(> (count %) 1))
+       (map set)
+       set))
+
+
 ; https://www.4clojure.com/problem/78
 (defn trampo
   "Implement your own trampoline function."
@@ -115,6 +122,8 @@
     (if (fn? ret)
       (trampo ret)
       ret)))
+
+
 
 ; https://www.4clojure.com/problem/85
 (defn power-set [s]
@@ -254,7 +263,7 @@
             (if (= (count combo) k)
               #{combo}
               (when (not-empty xs)
-                (set
+                (set¡
                   (concat
                     combos
                     (k-comb-rec combos (conj combo (first xs)) (rest xs))
@@ -306,6 +315,85 @@
     '()
     (lazy-seq (cons (f h) (m f t)))))
 
+(fn [piece board]
+  (letfn [(tic-tac-toe [board]
+            (let [rows board
+                  cols (apply map list board)
+                  diags [[(get-in board [0 0]) (get-in board [1 1]) (get-in board [2 2]) ]
+                         [(get-in board [0 2]) (get-in board [1 1]) (get-in board [2 0])]]
+                  slices (concat rows cols diags)
+                  three-in-row?
+                  (fn [row]
+                    (cond
+                      (every? #(= % :x) row) :x
+                      (every? #(= % :o) row) :o
+                      :else nil))]
+              (some three-in-row? slices)))]
+    (let [next-row (fn [row col]
+                     (if (= col 2)
+                       (inc row)
+                       row))
+          next-col (fn [col]
+                     (if (= col 2)
+                       0
+                       (inc col)))]
+    (loop [wins #{}
+           row 0
+           col 0]
+      (cond
+        (= row 3)
+        wins
+
+        (and (= (get-in board [row col]) :e)
+             (tic-tac-toe (assoc-in board [row col] piece)))
+        (recur
+          (conj wins [row col])
+          (next-row row col)
+          (next-col col))
+
+        :else
+        (recur
+          wins
+          (next-row row col)
+          (next-col col)))))))
+
+; https://www.4clojure.com/problem/119
+(defn win-tic-tac-toe
+  "Create a function that accepts a game piece and board as arguments, and
+  returns a set (possibly empty) of all valid board placements of the game
+  piece  which would result in an immediate win.\n\n "
+  [piece board]
+  ; find each :e
+  ; replace with :piece
+  ; if tic-tac-toe win, add to set
+  (let [next-row (fn [row col]
+                   (if (= col 2)
+                     (inc row)
+                     row))
+        next-col (fn [col]
+                   (if (= col 2)
+                     0
+                     (inc col)))]
+    (loop [wins #{}
+           row 0
+           col 0]
+      (cond
+        (= row 3)
+        wins
+
+        (and (= (get-in board [row col]) :e)
+             (tic-tac-toe (assoc-in board [row col] piece)))
+        (recur
+          (conj wins [row col])
+          (next-row row col)
+          (next-col col))
+
+        :else
+        (recur
+          wins
+          (next-row row col)
+          (next-col col))))))
+
 ; https://www.4clojure.com/problem/120
 (defn sum-square-digits
   "Write a function which takes a collection of integers as an argument.
@@ -348,6 +436,8 @@
          (fn [sum [power bin]]
            (+ sum (* bin (int (Math/pow 2 power)))))
          0)))
+
+
 
 ; https://www.4clojure.com/problem/126
 (defn looking-glass
@@ -414,6 +504,61 @@
         val
         (recur (cons val tokens))))))
 
+; https://4clojure.oxal.org/#/problem/141
+(defn find-winner [trump-suit]
+  (fn [cards]
+    (let [lead-suit
+          (:suit (first cards))
+
+          trump-cards
+          (->> cards
+               (filter #(= (:suit %) trump-suit))
+               (sort-by :rank))
+
+          lead-cards
+          (->> cards
+               (filter #(= (:suit %) lead-suit))
+               (sort-by :rank))]
+
+      (or (last trump-cards)
+          (last lead-cards)))))
+
+(defn find-winner [trump-suit]
+  (fn [cards]
+    (let [trump-cards (sort-by :rank (filter #(= (:suit %) trump-suit) cards))
+          trick-cards (sort-by :rank (filter #(= (:suit %) (:suit (first
+                                                                    cards)))
+                                             cards))]
+      (or (last trump-cards)
+          (last trick-cards)))))
+
+#_(defn find-winner [trump-suit]
+  (fn [cards]
+    (let [lead-suit (:suit (first cards))
+          trump-card? (fn [card] (= (:suit card) trump))]
+      (loop [winning-trump-card nil
+             winning-lead-card nil
+             cards cards]
+        (let [curr-card (first cards)]
+          (cond
+            (trump-card? curr-card)
+            (if (or
+                  (nil? winning-trump-card)
+                  (> (:rank curr-card) (:rank winning-trump-card)))
+              (recur curr-card winning-lead-card (rest cards))
+              )
+          )
+
+        )
+      (reduce (fn [winning-card curr-card]
+                (if (trump-card? curr-card)
+                  (if (trump-card? winning-card)
+                    (> (:rank curr-card) (:rank))
+                ))
+      )
+    )
+  )
+
 ; https://www.4clojure.com/problem/143
 (defn dot-product [a b]
   (apply + (map * a b)))
@@ -466,6 +611,21 @@
 
 ; Better? shorter solution; requires clojure.set which 4clojure disallows. (I think).
 ; #(= (->> (map count %) (reduce +)) (count (apply clojure.set/union %)))
+
+; https://www.4clojure.com/problem/157
+(defn index-seq
+  "Transform a sequence into a sequence of pairs containing the original
+  elements along with their index."
+  [xs]
+  (into [] (zipmap xs (range (count xs)))))
+
+; https://4clojure.oxal.org/#/problem/158
+(defn decurry
+  "Write a function that accepts a curried function of unknown arity n.
+  Return an equivalent function of n arguments."
+  [curried-fn]
+  (fn [& args]
+    (reduce #(% %2) curried-fn args)))
 
 ; https://www.4clojure.com/problem/171
 (defn intervals
