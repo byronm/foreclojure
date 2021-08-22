@@ -535,42 +535,6 @@
       (or (last trump-cards)
           (last lead-cards)))))
 
-(defn find-winner [trump-suit]
-  (fn [cards]
-    (let [trump-cards (sort-by :rank (filter #(= (:suit %) trump-suit) cards))
-          trick-cards (sort-by :rank (filter #(= (:suit %) (:suit (first
-                                                                    cards)))
-                                             cards))]
-      (or (last trump-cards)
-          (last trick-cards)))))
-
-#_(defn find-winner [trump-suit]
-  (fn [cards]
-    (let [lead-suit (:suit (first cards))
-          trump-card? (fn [card] (= (:suit card) trump))]
-      (loop [winning-trump-card nil
-             winning-lead-card nil
-             cards cards]
-        (let [curr-card (first cards)]
-          (cond
-            (trump-card? curr-card)
-            (if (or
-                  (nil? winning-trump-card)
-                  (> (:rank curr-card) (:rank winning-trump-card)))
-              (recur curr-card winning-lead-card (rest cards))
-              )
-          )
-
-        )
-      (reduce (fn [winning-card curr-card]
-                (if (trump-card? curr-card)
-                  (if (trump-card? winning-card)
-                    (> (:rank curr-card) (:rank))
-                ))
-      )
-    )
-  )
-
 ; https://www.4clojure.com/problem/143
 (defn dot-product [a b]
   (apply + (map * a b)))
@@ -589,6 +553,11 @@
       (f v))
     val
     (cycle fs)))
+
+; https://4clojure.oxal.org/#/problem/146
+(defn tree-to-table []
+  
+  )
 
 ; https://www.4clojure.com/problem/147
 (defn pascal-trapezoid [s]
