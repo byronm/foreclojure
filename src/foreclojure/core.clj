@@ -1,15 +1,14 @@
 (ns foreclojure.core
   (require [clojure.string]))
 
-(defn product-digits
-  "Write a function which multiplies two numbers and
-  returns the result as a sequence of its digits."
-  [x y]
-  (let [product (* x y)
-        num-str (str product)
-        tokens (into [] num-str)
-        tokens (map str tokens)]
-    (map #(Integer/parseInt %) tokens)))
+; https://4clojure.oxal.org/#/problem/46
+(defn flip
+  "Write a higher-order function which flips the order of the arguments of an
+  input function."
+  [f]
+  (fn [& args]
+    (let [flipped (reverse args)]
+      (apply f flipped))))
 
 ; https://www.4clojure.com/problem/59
 (defn juxtaposition
@@ -237,6 +236,17 @@
        (map set)
        set))
 
+; https://4clojure.oxal.org/#/problem/99
+(defn product-digits
+  "Write a function which multiplies two numbers and
+  returns the result as a sequence of its digits."
+  [x y]
+  (let [product (* x y)
+        num-str (str product)
+        tokens (into [] num-str)
+        tokens (map str tokens)]
+    (map #(Integer/parseInt %) tokens)))
+
 ; https://www.4clojure.com/problem/100
 (defn least-common-multiple [ & xs]
   )
@@ -454,6 +464,8 @@
         ranks {\2 0 \3 1 \4 2 \5 3 \6 4 \7 5 \8 6 \9 7 \T 8 \J 9 \Q 10 \K 11 \A 12}]
     {:suit (suits suit)
      :rank (ranks rank)}))
+
+;
 
 ; https://www.4clojure.com/problem/132
 ; This solution works, but ended up being a little clunky.
