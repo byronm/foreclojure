@@ -1,5 +1,5 @@
 (ns foreclojure.core
-  (require [clojure.string]))
+  (:require [clojure.string]))
 
 ; https://4clojure.oxal.org/#/problem/46
 (defn flip
@@ -135,7 +135,7 @@
               #{#{}}
               (let [item (first from)]
                 (create-subset (conj to (item)) (rest from))
-                (create-subset to (rest from)))]))
+                (create-subset to (rest from)))))]))
 
 ; https://www.4clojure.com/problem/86
 (defn happy-number? [n]
@@ -178,7 +178,7 @@
           (nil? left))
         (if (coll? right)
           (binary-tree? right)
-          (nil? right)))))))
+          (nil? right))))))
 
 ; This solution is cleaner because we consider nil to be a valid binary tree,
 ; eliminating a lot of the checks along the way in the above soln.
@@ -270,7 +270,7 @@
             (if (= (count combo) k)
               #{combo}
               (when (not-empty xs)
-                (set¡
+                (set
                   (concat
                     combos
                     (k-comb-rec combos (conj combo (first xs)) (rest xs))
@@ -461,6 +461,7 @@
 ; https://www.4clojure.com/problem/126
 (defn looking-glass
   "Choose an x that satisfies the following."
+  []
   (let [x java.lang.Class]
     (and (= (class x) x) x)))
 
