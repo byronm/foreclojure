@@ -10,7 +10,7 @@
     (let [flipped (reverse args)]
       (apply f flipped))))
 
-; https://www.4clojure.com/problem/59
+; https://4clojure.oxal.org/#/problem/59
 (defn juxtaposition
   "Take a set of functions and return a new function that takes a
   variable number of arguments and returns a sequence containing the
@@ -19,7 +19,7 @@
   (fn [& args]
     (map #(apply % args) fns)))
 
-; https://www.4clojure.com/problem/65
+; https://4clojure.oxal.org/#/problem/65
 (defn black-box-testing
   "Write a function which takes a collection and returns one of :map, :set,
   :list, or :vector - describing the type of collection it was given. You
@@ -33,7 +33,7 @@
       (= (conj sample 1 2) [1 2]) :vector
       :else :list)))
 
-; https://www.4clojure.com/problem/66
+; https://4clojure.oxal.org/#/problem/66
 (defn greatest-common-divisor
   "Given two integers, write a function which returns the greatest common
   divisor."
@@ -45,7 +45,7 @@
     (> a b) (greatest-common-divisor (- a b) b)
     :else (greatest-common-divisor a (- b a))))
 
-; https://www.4clojure.com/problem/70
+; https://4clojure.oxal.org/#/problem/70
 (defn word-sort
   "Write a function that splits a sentence up into a sorted list of words.
   Capitalization should not affect sort order and punctuation should be
@@ -53,7 +53,7 @@
   [s]
   (sort-by clojure.string/lower-case (re-seq #"\w+" s)))
 
-; https://www.4clojure.com/problem/73
+; https://4clojure.oxal.org/#/problem/73
 (defn three-in-row? [row]
   (cond
     (every? #(= % :x) row) :x
@@ -81,7 +81,7 @@
         slices (concat rows cols diags)]
     (some three-in-row? slices)))
 
-; https://www.4clojure.com/problem/74
+; https://4clojure.oxal.org/#/problem/74
 (defn filter-perfect-squares
   "Given a string of comma separated integers, write a function which returns
   a new comma separated string that only contains the numbers which are perfect
@@ -110,7 +110,7 @@
        (map set)
        set))
 
-; https://www.4clojure.com/problem/78
+; https://4clojure.oxal.org/#/problem/78
 (defn trampo
   "Implement your own trampoline function."
   [f & args]
@@ -121,7 +121,7 @@
       (trampo ret)
       ret)))
 
-; https://www.4clojure.com/problem/85
+; https://4clojure.oxal.org/#/problem/85
 (defn power-set [s]
   ; TODO: Speed this up. This is too slow and times out on 4Clojure.
   (if (empty? s)
@@ -137,7 +137,7 @@
                 (create-subset (conj to (item)) (rest from))
                 (create-subset to (rest from)))))]))
 
-; https://www.4clojure.com/problem/86
+; https://4clojure.oxal.org/#/problem/86
 (defn happy-number? [n]
   (loop [curr-num n
          seen #{}]
@@ -148,13 +148,13 @@
         (= square 1) true
         :else (recur square (conj seen curr-num))))))
 
-; https://www.4clojure.com/problem/90
+; https://4clojure.oxal.org/#/problem/90
 (defn cartesian-product
   "Write a function which calculates the Cartesian product of two sets."
   [a b]
   (set (for [x a y b] [x y])))
 
-; https://www.4clojure.com/problem/93
+; https://4clojure.oxal.org/#/problem/93
 (defn leaf? [x]
   (not-any? sequential? x))
 
@@ -167,7 +167,7 @@
     []
     xs))
 
-; https://www.4clojure.com/problem/95
+; https://4clojure.oxal.org/#/problem/95
 (defn binary-tree? [t]
   (if (not= 3 (count t))
     false
@@ -190,7 +190,7 @@
       (= (count t) 3)
       (every? binary-tree? (rest t)))))
 
-; https://www.4clojure.com/problem/96
+; https://4clojure.oxal.org/#/problem/96
 (defn symmetric? [t]
   (letfn [(mirror? [t1 t2]
             (or
@@ -200,7 +200,7 @@
                    (mirror? (nth t1 2) (nth t2 1)))))]
     (mirror? (nth t 1) (nth t 2))))
 
-; https://www.4clojure.com/problem/97
+; https://4clojure.oxal.org/#/problem/97
 (defn pascal-triangle
   "Pascal's triangle is a triangle of numbers computed using the following
   rules:
@@ -222,7 +222,7 @@
             [1]))
         (inc idx)))))
 
-; https://www.4clojure.com/problem/98
+; https://4clojure.oxal.org/#/problem/98
 (defn equiv-classes
   "a is equivalent to b with respect to f if and only if (f a) is equal to
   (f b). Write a function with arguments f and D that computes the
@@ -244,11 +244,11 @@
         tokens (map str tokens)]
     (map #(Integer/parseInt %) tokens)))
 
-; https://www.4clojure.com/problem/100
+; https://4clojure.oxal.org/#/problem/100
 (defn least-common-multiple [ & xs]
   )
 
-; https://www.4clojure.com/problem/102
+; https://4clojure.oxal.org/#/problem/102
 (defn into-camel-case
   "When working with java, you often need to create an object with
   fieldsLikeThis, but you'd rather work with a hashmap that has :keys-like-this
@@ -260,7 +260,7 @@
         tokens (apply vector x capitalized-xs)]
     (clojure.string/join tokens)))
 
-; https://www.4clojure.com/problem/103
+; https://4clojure.oxal.org/#/problem/103
 (defn k-combinations
   "Given a sequence S consisting of n elements generate all k-combinations of S,
   i. e. generate all possible sets consisting of k distinct elements taken
@@ -277,7 +277,7 @@
                     (k-comb-rec combos combo (rest xs)))))))]
     (k-comb-rec #{} #{} xs)))
 
-; https://www.4clojure.com/problem/105
+; https://4clojure.oxal.org/#/problem/105
 (defn identify-k-v [s]
   (loop [m {}
          k (first s)
@@ -301,7 +301,7 @@
           vs (remove #(keyword? (first %)) partitions)]
       (apply hash-map (interleave ks vs))))
 
-; https://www.4clojure.com/problem/114
+; https://4clojure.oxal.org/#/problem/114
 (defn global-take-while
   "Write a function which accepts an integer n, a predicate p, and a sequence.
   It should return a lazy sequence of items in the list up to, but not
@@ -326,7 +326,7 @@
              p?
              (rest xs)))))))
 
-; https://www.4clojure.com/problem/118
+; https://4clojure.oxal.org/#/problem/118
 (defn m
   "Map is one of the core elements of a functional programming language.
   Given a function f and an input sequence s, return a lazy sequence of (f x)
@@ -378,7 +378,7 @@
           (next-row row col)
           (next-col col)))))))
 
-; https://www.4clojure.com/problem/119
+; https://4clojure.oxal.org/#/problem/119
 (defn win-tic-tac-toe
   "Create a function that accepts a game piece and board as arguments, and
   returns a set (possibly empty) of all valid board placements of the game
@@ -415,7 +415,7 @@
           (next-row row col)
           (next-col col))))))
 
-; https://www.4clojure.com/problem/120
+; https://4clojure.oxal.org/#/problem/120
 (defn sum-square-digits
   "Write a function which takes a collection of integers as an argument.
   Return the count of how many elements are smaller than the sum of their
@@ -429,7 +429,7 @@
           (< num square)))
       coll)))
 
-; https://www.4clojure.com/problem/121
+; https://4clojure.oxal.org/#/problem/121
 (defn universal-computation-engine
   "Given a formula in prefix notation, return a function that accepts a
   mapping of variables to values and computes the result. Formulas may
@@ -447,7 +447,7 @@
                 (apply (get ops op) (map evaluate operands)))))]
       (evaluate formula))))
 
-; https://www.4clojure.com/problem/122
+; https://4clojure.oxal.org/#/problem/122
 (defn binary-to-decimal [s]
   (->> (reverse s)
        (map-indexed
@@ -458,14 +458,14 @@
            (+ sum (* bin (int (Math/pow 2 power)))))
          0)))
 
-; https://www.4clojure.com/problem/126
+; https://4clojure.oxal.org/#/problem/126
 (defn looking-glass
   "Choose an x that satisfies the following."
   []
   (let [x java.lang.Class]
     (and (= (class x) x) x)))
 
-; https://www.4clojure.com/problem/128
+; https://4clojure.oxal.org/#/problem/128
 (defn recognize-playing-cards [[suit rank]]
   (let [suits {\S :spade
                \H :heart
@@ -475,7 +475,7 @@
     {:suit (suits suit)
      :rank (ranks rank)}))
 
-; https://www.4clojure.com/problem/132
+; https://4clojure.oxal.org/#/problem/132
 ; This solution works, but ended up being a little clunky.
 ; Initially, I thought chunking the list into tuples (using `partition-by`) would
 ; make it easy to assess the information I needed: each pair of adjacent elements.
@@ -512,7 +512,7 @@
       []
       coll))
 
-; https://www.4clojure.com/problem/135
+; https://4clojure.oxal.org/#/problem/135
 (defn infix
   "Write a function that accepts a variable length mathematical expression
   consisting of numbers and the operations +, -, *, and /.
@@ -544,11 +544,11 @@
       (or (last trump-cards)
           (last lead-cards)))))
 
-; https://www.4clojure.com/problem/143
+; https://4clojure.oxal.org/#/problem/143
 (defn dot-product [a b]
   (apply + (map * a b)))
 
-; https://www.4clojure.com/problem/144
+; https://4clojure.oxal.org/#/problem/144
 (defn oscilrate [val & fs]
   (lazy-seq
     (cons val
@@ -567,7 +567,7 @@
 (defn tree-to-table []
   )
 
-; https://www.4clojure.com/problem/147
+; https://4clojure.oxal.org/#/problem/147
 (defn pascal-trapezoid [s]
   (lazy-seq (cons s
                   (pascal-trapezoid
@@ -585,11 +585,11 @@
     #(mapv + (cons 0 %) (conj % 0))
     s))
 
-; https://www.4clojure.com/problem/150
+; https://4clojure.oxal.org/#/problem/150
 (defn palindromic-numbers [n]
   )
 
-; https://www.4clojure.com/problem/153
+; https://4clojure.oxal.org/#/problem/153
 (defn disjoint?
   "Given a set of sets, create a function which returns true if no two
   of those sets have any elements in common1 and false otherwise. "
@@ -601,7 +601,7 @@
 ; Better? shorter solution; requires clojure.set which 4clojure disallows. (I think).
 ; #(= (->> (map count %) (reduce +)) (count (apply clojure.set/union %)))
 
-; https://www.4clojure.com/problem/157
+; https://4clojure.oxal.org/#/problem/157
 (defn index-seq
   "Transform a sequence into a sequence of pairs containing the original
   elements along with their index."
@@ -616,7 +616,7 @@
   (fn [& args]
     (reduce #(% %2) curried-fn args)))
 
-; https://www.4clojure.com/problem/171
+; https://4clojure.oxal.org/#/problem/171
 (defn intervals
   "Write a function that takes a sequence of integers and returns a sequence of
   \"intervals\". Each interval is a a vector of two integers, start and end,
@@ -644,7 +644,7 @@
       []
       groups)))
 
-; https://www.4clojure.com/problem/177
+; https://4clojure.oxal.org/#/problem/177
 (defn balanced? [s]
   ; This implementaiton has a bug in that it only checks that num open matches num closed. Doesn't check ordering.
   ; So it will accept "[{]}", which is incorrect.
@@ -692,7 +692,7 @@
       []
       s)))
 
-; https://www.4clojure.com/problem/195
+; https://4clojure.oxal.org/#/problem/195
 (defn gen-parens-A
   "Generate all possible combinations of well-formed parentheses of length 2n
   (n pairs of parentheses). Return as a set of strings, e.g. ,#{'()()', '(())'}."
