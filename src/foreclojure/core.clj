@@ -110,7 +110,6 @@
        (map set)
        set))
 
-
 ; https://www.4clojure.com/problem/78
 (defn trampo
   "Implement your own trampoline function."
@@ -121,8 +120,6 @@
     (if (fn? ret)
       (trampo ret)
       ret)))
-
-
 
 ; https://www.4clojure.com/problem/85
 (defn power-set [s]
@@ -282,13 +279,27 @@
 
 ; https://www.4clojure.com/problem/105
 (defn identify-k-v [s]
-  ; oops; this implementation fails because it overlooked an edge-case
-  ; where we may have multiple keywords in a row, e.g. [:a :b] => {:a [] :b []},
-  ; and by partitioning we lose this signal.
-  (let [partitions (partition-by keyword? s)
-        ks (flatten (filter #(keyword? (first %)) partitions))
-        vs (remove #(keyword? (first %)) partitions)]
-    (apply hash-map (interleave ks vs))))
+  (loop [m {}
+         k (first s)
+         v []
+         s (rest s)]
+    (if (empty? s)
+      (if (nil? k)
+        m
+        (assoc m k v))
+      (let [curr (first s)]
+        (if (keyword? curr)
+          (recur (assoc m k v) curr [] (rest s))
+          (recur m k (conj v curr) (rest s)))))))
+
+#_(defn identify-k-v [s]
+    ; oops; this implementation fails because it overlooked an edge-case
+    ; where we may have multiple keywords in a row, e.g. [:a :b] => {:a [] :b []},
+    ; and by partitioning we lose this signal.
+    (let [partitions (partition-by keyword? s)
+          ks (flatten (filter #(keyword? (first %)) partitions))
+          vs (remove #(keyword? (first %)) partitions)]
+      (apply hash-map (interleave ks vs))))
 
 ; https://www.4clojure.com/problem/114
 (defn global-take-while
@@ -447,8 +458,6 @@
            (+ sum (* bin (int (Math/pow 2 power)))))
          0)))
 
-
-
 ; https://www.4clojure.com/problem/126
 (defn looking-glass
   "Choose an x that satisfies the following."
@@ -464,8 +473,6 @@
         ranks {\2 0 \3 1 \4 2 \5 3 \6 4 \7 5 \8 6 \9 7 \T 8 \J 9 \Q 10 \K 11 \A 12}]
     {:suit (suits suit)
      :rank (ranks rank)}))
-
-;
 
 ; https://www.4clojure.com/problem/132
 ; This solution works, but ended up being a little clunky.
@@ -483,7 +490,8 @@
            (map (fn [t] (if (= 1 (count t)) (last t) (butlast t))))
            flatten)))
 
-; So instead I moved to just build the lazy sequence from scratch. Less code, less edge cases.
+; So instead I moved to just build the lazy sequence from scratch.
+; Less code, less edge cases.
 (defn insert-between [p? val [a b :as coll]]
   (lazy-seq
     (when b
@@ -491,7 +499,7 @@
         (cons a (cons val (insert-between p? val (rest coll))))
         (cons a (insert-between p? val (rest coll)))))))
 
-; This implementaiton was cleaner, but wasn't lazy, and one of the test cases
+; This implementation was cleaner, but wasn't lazy, and one of the test cases
 ; involved an infinite sequence.
 #_(defn insert-between [p? val coll]
     (reduce
@@ -545,8 +553,8 @@
     (cons val
           (apply oscilrate (cons ((first fs) val) (concat (rest fs) [(first fs)]))))))
 
-; Better Implementation: Use `reductions` and `cycle` to eliminate the above impl's
-; (`lazy-seq` and `concart rest/first` calls.
+; Better Implementation: Use `reductions` and `cycle` to eliminate the above
+; impl's (`lazy-seq` and `concat rest/first` calls.
 (defn oscilrate [val & fs]
   (reductions
     (fn [v f]
@@ -556,7 +564,6 @@
 
 ; https://4clojure.oxal.org/#/problem/146
 (defn tree-to-table []
-  
   )
 
 ; https://www.4clojure.com/problem/147
@@ -700,88 +707,3 @@
                        (gen-parens-rec (str paren-str ")") num-to-open (dec num-unclosed))
                        #{})))))]
     (gen-parens-rec "" n 0)))
-
-(defn identify-k-v [s]
-  (loop [m {}
-         k (first s)
-         v []
-         s (rest s)]
-    (if (empty? s)
-      (if (nil? k)
-        m
-        (assoc m k v))
-      (let [curr (first s)]
-        (if (keyword? curr)
-          (recur (assoc m k v) curr [] (rest s))
-          (recur m k (conj v curr) (rest s)))))))
-
-;;;
-; Game of Life
-; Clojure Programming Textbook Example
-; TODO: Move to its own project
-;;;
-(defn empty-board
-  "Creates a rectangular empty board of the specified width
-   ahd height."
-  [w h]
-  (vec (repeat w (vec (repeat h nil)))))
-
-(defn populate
-  "Turns :on each of the cells specified as [y, x] coordiantes."
-  [board living-cells]
-  (reduce (fn [board coordinates]
-            (assoc-in board coordinates :on))
-          board
-          living-cells))
-
-(def glider (populate (empty-board 6 6) #{[2 0] [2 1] [2 2] [1 2] [0 1]}))
-
-(defn neighbours [[x y]]
-  (for [dx [-1 0 1] dy [-1 0 1] :when (not= 0 dx dy)]
-    [(+ dx x) (+ dy y)]))
-
-(defn count-neighbours
-  [board loc]
-  (count (filter #(get-in board %) (neighbours loc))))
-
-(defn indexed-step
-  "Yields the next state of the board, using indices to determine neighbors,
-   liveness, etc."
-  [board]
-  (let [w (count board)
-        h (count (first board))]
-    (loop [new-board board
-           x 0
-           y 0]
-      (cond
-        (>= x w) new-board
-        (>= y h) (recur new-board (inc x) 0)
-        :else
-        (let [new-liveness
-              (case (count-neighbours board [x y])
-                2 (get-in board [x y])
-                3 :on
-                nil)]
-          (recur (assoc-in new-board [x y] new-liveness) x (inc y)))))))
-
-(defn window
-  "Returns a lazy sequence of 3-item windows centered around each item of coll."
-  [coll]
-  (partition 3 1 (concat [nil] coll [nil])))
-
-(defn cell-block
-  [[left mid right]]
-  (window (map vector (or left (repeat nil)) mid (or right (repeat nil)))))
-
-(defn cell-block
-  "Creates a sequence of 3x3 windows from a triple of 3 sequences."
-  [[left mid right]]
-  (window (map vector left mid right)))
-
-(defn step
-  "Yields the next state of the world."
-  [cells]
-  (set (for [[loc n] (frequencies (mapcat neighbours cells))
-             :when (or (= n 3) (and (= n 2) (cells loc)))]
-         loc)))
-
