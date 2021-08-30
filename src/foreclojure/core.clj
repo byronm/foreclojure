@@ -9,7 +9,7 @@
   (nth xs (dec (count xs))))
 
 (comment
-  (def __ #(nth % (dec (count %))))
+  (def __ last*)
   (= (__ [1 2 3 4 5]) 5)
   (= (__ '(5 4 3)) 3)
   (= (__ ["b" "c" "d"]) "d"))
@@ -42,7 +42,7 @@
 
 ; https://4clojure.oxal.org/#/problem/22
 (defn count*
-  "Write a function which returns the total number of elements in teh sequence.
+  "Write a function which returns the total number of elements in the sequence.
   Restriction: count."
   [xs]
   ;(reduce (fn [num-elems _] (inc num-elems)) 0 xs))
@@ -1355,9 +1355,10 @@
                 match (get {\) \(, \} \{, \] \[} curr-char)]
             (if (= prev match)
               (pop stack)
-              ; If they didn't match, this string isn't balanced because tokens aren't properly paired.
-              ; Just push the closed token on, which will never get popped, as a sentinel.
-              ; When reduce finishes, we won't have an empty stack.
+              ; If they didn't match, this string isn't balanced because tokens
+              ; aren't properly paired.  Just push the closed token on, which
+              ; will never get popped, as a sentinel.  When reduce finishes, we
+              ; won't have an empty stack.
               (conj stack curr-char)))
 
           :else
